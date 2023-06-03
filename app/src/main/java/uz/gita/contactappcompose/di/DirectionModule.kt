@@ -15,5 +15,5 @@ interface DirectionModule {
 
     @Binds
     @Singleton
-    fun bindScreen1Direction(impl: HomeDirection): HomeViewContract.Direction
+    fun bindHomeScreenDirection(impl: HomeDirection): HomeViewContract.Direction
 }
