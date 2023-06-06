@@ -15,9 +15,9 @@ import javax.inject.Inject
 class HomeViewModelImpl @Inject constructor(
     private val repository: AppRepository,
     private val direction: HomeDirection
-) : HomeViewContract.ViewModel, ViewModel() {
+) : HomeContract.ViewModel, ViewModel() {
 
-    override val uiState = MutableStateFlow(HomeViewContract.UiState())
+    override val uiState = MutableStateFlow(HomeContract.UiState())
 
     init {
         repository.retrieveAllContacts()
@@ -25,19 +25,16 @@ class HomeViewModelImpl @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    override fun onEventDispatcher(intent: HomeViewContract.Intent) {
+    override fun onEventDispatcher(intent: HomeContract.Intent) {
         when (intent) {
-            is HomeViewContract.Intent.Delete -> repository.delete(intent.contact)
-            is HomeViewContract.Intent.OpenEditContact -> {
-                viewModelScope.launch {
-                    direction.navigateToAddEditScreen(data = intent.updateData)
-                }
+            is HomeContract.Intent.Delete -> repository.delete(intent.contact)
+
+            is HomeContract.Intent.OpenEditContact -> {
+                viewModelScope.launch { direction.navigateToAddEditScreen(data = intent.updateData) }
             }
 
-            is HomeViewContract.Intent.OpenAddContact -> {
-                viewModelScope.launch {
-                    direction.navigateToAddEditScreen(data = null)
-                }
+            is HomeContract.Intent.OpenAddContact -> {
+                viewModelScope.launch { direction.navigateToAddEditScreen(data = null) }
             }
         }
     }

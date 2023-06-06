@@ -3,7 +3,7 @@ package uz.gita.contactappcompose.ui.screen.home
 import kotlinx.coroutines.flow.StateFlow
 import uz.gita.contactappcompose.data.common.ContactData
 
-interface HomeViewContract {
+interface HomeContract {
 
     sealed interface Intent {
         class OpenEditContact(val updateData: ContactData) : Intent

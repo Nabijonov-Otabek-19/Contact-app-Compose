@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class HomeDirection @Inject constructor(
     private val appNavigator: AppNavigator
-) : HomeViewContract.Direction {
+) : HomeContract.Direction {
 
     override suspend fun navigateToAddEditScreen(data: ContactData?) {
         appNavigator.navigateTo(AddScreen(data))

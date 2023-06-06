@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
@@ -52,8 +52,8 @@ class HomeScreen : AndroidScreen() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val viewModel: HomeViewContract.ViewModel = getViewModel<HomeViewModelImpl>()
-        val uiState = viewModel.uiState.collectAsState().value
+        val viewModel: HomeContract.ViewModel = getViewModel<HomeViewModelImpl>()
+        val uiState = viewModel.uiState.collectAsState()
         ContactAppComposeTheme {
             Surface(modifier = Modifier.fillMaxSize()) {
                 Scaffold(
@@ -87,8 +87,8 @@ fun TopBar() {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeContactScreenContent(
-    uiState: HomeViewContract.UiState,
-    onEventDispatcher: (intent: HomeViewContract.Intent) -> Unit,
+    uiState: State<HomeContract.UiState>,
+    onEventDispatcher: (intent: HomeContract.Intent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val showDialog = remember { mutableStateOf(false) }
@@ -107,7 +107,7 @@ fun HomeContactScreenContent(
         LazyColumn(
             modifier = Modifier.padding(horizontal = 8.dp),
             content = {
-                items(uiState.contacts) {
+                items(uiState.value.contacts) {
                     Spacer(modifier = Modifier.size(8.dp))
 
                     ContactItem(
@@ -117,7 +117,7 @@ fun HomeContactScreenContent(
                         modifier = Modifier.combinedClickable(
                             onClick = {
                                 logger("Item click")
-                                onEventDispatcher(HomeViewContract.Intent.OpenEditContact(it))
+                                onEventDispatcher(HomeContract.Intent.OpenEditContact(it))
                             },
                             onLongClick = {
                                 data.value = it
@@ -136,7 +136,7 @@ fun HomeContactScreenContent(
             containerColor = Color.Blue,
             onClick = {
                 logger("Action button")
-                onEventDispatcher(HomeViewContract.Intent.OpenAddContact)
+                onEventDispatcher(HomeContract.Intent.OpenAddContact)
             }) {
             Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.White)
         }
@@ -145,7 +145,7 @@ fun HomeContactScreenContent(
 
 @Composable
 fun AlertDialogComponent(
-    onEventDispatcher: (intent: HomeViewContract.Intent) -> Unit,
+    onEventDispatcher: (intent: HomeContract.Intent) -> Unit,
     data: ContactData,
     show: Boolean,
     showDialog: MutableState<Boolean>
@@ -163,7 +163,7 @@ fun AlertDialogComponent(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        onEventDispatcher(HomeViewContract.Intent.Delete(data))
+                        onEventDispatcher(HomeContract.Intent.Delete(data))
                         openDialog.value = false
                         showDialog.value = false
                         Toast.makeText(context, "Item deleted", Toast.LENGTH_LONG).show()
@@ -179,21 +179,6 @@ fun AlertDialogComponent(
             },
             containerColor = colorResource(id = R.color.teal_200),
             textContentColor = Color.White
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview(showSystemUi = true)
-@Composable
-fun ContentPreview() {
-    Scaffold(
-        topBar = { TopBar() }
-    ) {
-        HomeContactScreenContent(
-            uiState = HomeViewContract.UiState(),
-            onEventDispatcher = {},
-            Modifier.padding(it)
         )
     }
 }
