@@ -8,7 +8,6 @@ interface HomeContract {
     sealed interface Intent {
         class OpenEditContact(val updateData: ContactData) : Intent
         class Delete(val contact: ContactData) : Intent
-
         object OpenAddContact : Intent
     }
 
@@ -22,7 +21,7 @@ interface HomeContract {
         fun onEventDispatcher(intent: Intent)
     }
 
-    interface Direction{
+    interface Direction {
         suspend fun navigateToAddEditScreen(data: ContactData?)
     }
 }
