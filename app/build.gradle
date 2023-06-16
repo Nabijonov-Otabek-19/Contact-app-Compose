@@ -88,6 +88,6 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.5.1'
 
     // Coroutine
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
 
 }
